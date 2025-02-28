@@ -29,11 +29,10 @@ app.get('/api/stream/:videoId', async (req, res) => {
     const videoId = req.params.videoId;
     const videoUrl = `https://www.youtube.com/watch?v=${videoId}`;
 
-    // Get audio info and URL using yt-dlp with corrected options
     const info = await ytdlp(videoUrl, {
       dumpSingleJson: true,
       format: 'bestaudio[ext=m4a]',
-      downloadSections: '*10-50',  // Extract from 10s to 50s
+      downloadSections: '*15:00-',  // Start from 10 seconds until the end
       noCheckCertificates: true,
     });
 
@@ -41,7 +40,6 @@ app.get('/api/stream/:videoId', async (req, res) => {
       return res.status(404).json({ error: 'No audio format found' });
     }
 
-    // Redirect to the audio URL
     res.redirect(info.url);
 
   } catch (error) {
